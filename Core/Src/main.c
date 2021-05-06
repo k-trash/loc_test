@@ -22,7 +22,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "mpu6050.h"
+#include "madgwick.h"
+#include "math.h"
+#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -36,7 +39,8 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+#define PPR 1024
+#define R_ODOM 60
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -49,7 +53,8 @@ TIM_HandleTypeDef htim7;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+TIM_Encoder_InitTypeDef s_config;
+TIM_MasterConfigTypeDef s_master_config;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -61,12 +66,16 @@ static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+float roll, pitch, yaw;
+volatile long count1, count2 = 0;
+volatile int distance1, distance2 = 0.0;
+volatile int overflow1, overflow2 = 0;
+char buf[50];
 /* USER CODE END 0 */
 
 /**
@@ -418,7 +427,31 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	if(htim->Instance == TIM1){
+		__HAL_TIM_CLEAR_FLAG(&htim1, TIM_IT_UPDATE);
+		if(__HAL_TIM_IS_TIM_COUNTING_DOWN(&htim1)){
+			overflow1--;
+		}else{
+			overflow1++;
+		}
+	}else if(htim->Instance == TIM2){
+		__HAL_TIM_CLEAR_FLAG(&htim2, TIM_IT_UPDATE);
+		if(__HAL_TIM_IS_TIM_COUNTING_DOWN(&htim2)){
+			overflow2--;
+		}else{
+			overflow2++;
+		}
+	}else if(htim->Instance == TIM7){
+		updateMPU6050();
+		updateIMU(getGyro_X(), getGyro_Y(), getGyro_Z(), getAccel_X(), getAccel_Y(), getAccel_Z());
+		roll = getRoll();
+		pitch = getPitch();
+		yaw = getYaw();
+		sprintf(buf, "yaw:%.5f En1:%ld %dmm En2:%ld %dmm\r\n", yaw, count1, distance1, count2, distance2);
+		HAL_UART_Transmit(&huart2, (uint8_t*)buf, sizeof(buf), 0xFFFF);
+	}
+}
 /* USER CODE END 4 */
 
 /**
