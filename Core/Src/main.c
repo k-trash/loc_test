@@ -129,8 +129,8 @@ int main(void)
   {
 	  count1 = (long)(overflow1) * 0x10000 + (long)TIM1->CNT;
 	  count2 = (long)(overflow2) * 0x10000 + (long)TIM2->CNT;
-	  distance1 = M_PI * r * count1 / (PPR * 4.0);
-	  distance2 = M_PI * r * count2 / (PPR * 4.0);
+	  distance1 = M_PI * R_ODOM * count1 / (PPR * 4.0);
+	  distance2 = M_PI * R_ODOM * count2 / (PPR * 4.0);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -12,7 +12,7 @@
 #define BETA_DEF 0.1f            // 2 * proportional gain
 
 void beginFilter(float sample_freq_) {
-	filter.beta = betaDef;
+	filter.beta = BETA_DEF;
 	filter.q0 = 1.0f;
 	filter.q1 = 0.0f;
 	filter.q2 = 0.0f;
@@ -34,10 +34,10 @@ void updateIMU(float gx_, float gy_, float gz_, float ax_, float ay_, float az_)
 	gy_ *= 0.0174533f;
 	gz_ *= 0.0174533f;
 
-	q_dot1 = 0.5f * (-(filter.q1) * gx - filter.q2 * gy - filter.q3 * gz);
-	q_dot2 = 0.5f * (filter.q0 * gx + filter.q2 * gz - filter.q3 * gy);
-	q_dot3 = 0.5f * (filter.q0 * gy - filter.q1 * gz + filter.q3 * gx);
-	q_dot4 = 0.5f * (filter.q0 * gz + filter.q1 * gy - filter.q2 * gx);
+	q_dot1 = 0.5f * (-(filter.q1) * gx_ - filter.q2 * gy_ - filter.q3 * gz_);
+	q_dot2 = 0.5f * (filter.q0 * gx_ + filter.q2 * gz_ - filter.q3 * gy_);
+	q_dot3 = 0.5f * (filter.q0 * gy_ - filter.q1 * gz_ + filter.q3 * gx_);
+	q_dot4 = 0.5f * (filter.q0 * gz_ + filter.q1 * gy_ - filter.q2 * gx_);
 
 	if(!((ax_ == 0.0f) && (ay_ == 0.0f) && (az_ == 0.0f))) {
 
