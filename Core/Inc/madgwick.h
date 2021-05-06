@@ -25,7 +25,7 @@ Madgwick filter;
 
 float invSqrt(float x_);
 
-void beginFilter(float sample_frequency_);
+void beginFilter(float sample_freq_);
 
 void updateIMU(float gx_, float gy_, float gz_, float ax_, float ay_, float az_);
 
