@@ -112,13 +112,25 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
-
+  beginMPU6050(1000);
+  beginFilter(200);
+  HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
+  HAL_TIM_Base_Start_IT(&htim1);
+  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
+  HAL_TIM_Base_Start_IT(&htim2);
+  HAL_TIM_Base_Start_IT(&htim7);
+  overflow1 = 0;
+  overflow2 = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  count1 = (long)(overflow1) * 0x10000 + (long)TIM1->CNT;
+	  count2 = (long)(overflow2) * 0x10000 + (long)TIM2->CNT;
+	  distance1 = M_PI * r * count1 / (PPR * 4.0);
+	  distance2 = M_PI * r * count2 / (PPR * 4.0);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
