@@ -92,26 +92,26 @@ void updateMPU6050(void){
 	imu.gz = (gz_raw * 250.0f) / 32768.0f - imu.off_gz;
 }
 
-float getAccel_X(void){
+float getAccelX(void){
 	return imu.ax;
 }
 
-float getAccel_Y(void){
+float getAccelY(void){
 	return imu.ay;
 }
 
-float getAccel_Z(void){
+float getAccelZ(void){
 	return imu.az;
 }
 
-float getGyro_X(void){
+float getGyroX(void){
 	return imu.gx;
 }
 
-float getGyro_Y(void){
+float getGyroY(void){
 	return imu.gy;
 }
 
-float getGyro_Z(void){
+float getGyroZ(void){
 	return imu.gz;
 }
